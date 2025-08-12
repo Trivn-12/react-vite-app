@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline của tớ và nàng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght @400;700&family=Inter:wght @300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #100020;
+            --primary: #BF00FF;
+            --text: #BF00FF;
+            --text-2: #A020F0;
+            --radius: 12px;
+            --shadow: 0 8px 32px rgba(191, 0, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #lava-lamp {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--primary), #ff6bff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(191, 0, 255, 0.3);
+        }
+
+        .subtitle {
+            color: #e0e0ff;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+            color: #ff6bff;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, transparent, var(--primary), transparent);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item:nth-child(odd) {
+            padding-left: calc(50% + 30px);
+        }
+
+        .timeline-item:nth-child(even) {
+            padding-right: calc(50% + 30px);
+        }
+
+        .timeline-date {
+            position: absolute;
+            top: 0;
+            width: 60px;
+            height: 60px;
+            background: rgba(191, 0, 255, 0.1);
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+            z-index: 1;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-date {
+            left: calc(50% - 30px);
+        }
+
+        .timeline-item:nth-child(even) .timeline-date {
+            right: calc(50% - 30px);
+        }
+
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(191, 0, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(191, 0, 255, 0.2);
+        }
+
+        .timeline-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .timeline-description {
+            color: #e0e0ff;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .floating-emoji {
+            position: fixed;
+            font-size: 1.5rem;
+            pointer-events: none;
+            z-index: 10;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                padding-left: 80px !important;
+                padding-right: 20px !important;
+            }
+            
+            .timeline-item:nth-child(odd) .timeline-date,
+            .timeline-item:nth-child(even) .timeline-date {
+                left: 30px;
+                transform: translateX(-50%);
+            }
+            
+            .timeline-item:nth-child(even) .timeline-date {
+                left: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="lava-lamp"></canvas>
+    <div class="particles" id="particles"></div>
+    
+    <!-- Floating Emojis -->
+    <div class="floating-emoji" style="left: 10%; top: 20%;"></div>
+    <div class="floating-emoji" style="left: 30%; top: 15%;">❤️</div>
+    <div class="floating-emoji" style="left: 50%; top: 25%;"></div>
+    <div class="floating-emoji" style="left: 70%; top: 10%;"></div>
+    <div class="floating-emoji" style="left: 85%; top: 30%;"></div>
+    <div class="floating-emoji" style="left: 20%; top: 40%;">✨</div>
+    <div class="floating-emoji" style="left: 60%; top: 35%;"></div>
+    <div class="floating-emoji" style="left: 40%; top: 50%;"></div>
+
+    <div class="container">
+        <a href="index.html" class="back-link">
+            ← Về trang chủ
+        </a>
+
+        <header>
+            <h1>Timeline của tớ và nàng</h1>
+            <p class="subtitle">Những mốc đáng nhớ trong hành trình của chúng ta</p>
+        </header>
+
+        <div class="timeline">
+            <div class="timeline-item" id="event1">
+                <div class="timeline-date">22/02</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">Biết đến sự tồn tại</h3>
+                    <p class="timeline-description">Ngày đầu tiên tớ nhận ra có một người đặc biệt đang hiện diện trong thế giới này. Cảm giác như một tia sáng bất ngờ lóe lên.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item" id="event2">
+                <div class="timeline-date">25/02</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">Nàng ngủ đông</h3>
+                    <p class="timeline-description">Một khoảng lặng trong câu chuyện. Tớ vẫn nhớ những ngày chờ đợi, hy vọng nàng sẽ quay lại.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item" id="event3">
+                <div class="timeline-date">12/07</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">Nàng ngủ dậy</h3>
+                    <p class="timeline-description">Ngày nàng trở lại, như một bông hoa nở rộ sau mùa đông dài. Tớ mừng đến phát khóc luôn ấy.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item" id="event4">
+                <div class="timeline-date">22/07</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">Dòng chat đầu tiên</h3>
+                    <p class="timeline-description">"Chào cậu" - hai từ đơn giản nhưng chứa đựng cả một vũ trụ cảm xúc. Tớ hồi hộp đến mức tim đập thình thịch.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item" id="event5">
+                <div class="timeline-date">24/07</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">Chốt đơn ✨</h3>
+                    <p class="timeline-description">Ngày chúng ta chính thức thuộc về nhau. Tớ đã chờ ngày này từ rất lâu rồi.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item" id="event6">
+                <div class="timeline-date">Tiếp</div>
+                <div class="timeline-content">
+                    <h3 class="timeline-title">Tiếp tục viết </h3>
+                    <p class="timeline-description">Câu chuyện của chúng ta vẫn đang được viết tiếp... Mỗi ngày trôi qua là một chương mới, và tớ rất mong được viết tiếp cùng nàng.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lava Lamp Effect
+        class LavaLamp {
+            constructor() {
+                this.canvas = document.getElementById('lava-lamp');
+                this.ctx = this.canvas.getContext('2d');
+                this.blobs = [];
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                this.createBlobs();
+                this.animate();
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            createBlobs() {
+                for (let i = 0; i < 5; i++) {
+                    this.blobs.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        size: Math.random() * 100 + 50,
+                        color: `hsl(${280 + Math.random() * 20}, 70%, ${50 + Math.random() * 20}%)`
+                    });
+                }
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.blobs.forEach((blob, index) => {
+                    blob.x += blob.vx;
+                    blob.y += blob.vy;
+                    
+                    if (blob.x < 0 || blob.x > this.canvas.width) blob.vx *= -1;
+                    if (blob.y < 0 || blob.y > this.canvas.height) blob.vy *= -1;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(blob.x, blob.y, blob.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = blob.color;
+                    this.ctx.globalAlpha = 0.3;
+                    this.ctx.fill();
+                });
+                
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // Particle System
+        class ParticleSystem {
+            constructor() {
+                this.particles = [];
+                this.container = document.getElementById('particles');
+                this.createParticles();
+                this.animate();
+            }
+
+            createParticles() {
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.width = Math.random() * 4 + 2 + 'px';
+                    particle.style.height = particle.style.width;
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.opacity = Math.random() * 0.5 + 0.3;
+                    particle.style.animation = `float-particle ${Math.random() * 10 + 15}s infinite linear`;
+                    this.container.appendChild(particle);
+                }
+            }
+
+            animate() {
+                // Particles are animated via CSS
+            }
+        }
+
+        // Timeline scroll animation
+        function checkTimelineItems() {
+            const items = document.querySelectorAll('.timeline-item');
+            items.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.8) {
+                    item.classList.add('visible');
+                }
+            });
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            new LavaLamp();
+            new ParticleSystem();
+            
+            // Check timeline items on scroll
+            window.addEventListener('scroll', checkTimelineItems);
+            
+            // Initial check
+            setTimeout(checkTimelineItems, 500);
+        });
+    </script>
+</body>
+</html>
